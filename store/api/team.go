@@ -1,25 +1,99 @@
 package api
 
 import (
+	"encoding/json"
+	"math"
+	"net/http"
+	"strings"
+
 	"github.com/rakin-ishmam/nfplayer/model"
 	"github.com/rakin-ishmam/nfplayer/store"
 )
 
-type team struct {
+// fetch and parse
+type fnp struct {
+	URL string
+
+	team model.Team
+
+	hresp *http.Response
+
+	err error
+}
+
+func (f *fnp) get() {
+	if f.hasErr() {
+		return
+	}
+
+	f.hresp, f.err = http.Get(f.URL)
+}
+
+func (f *fnp) parse() {
+	if f.hasErr() {
+		return
+	}
+
+	resp := resp{}
+	if err := json.NewDecoder(f.hresp.Body).Decode(&resp); err != nil {
+		f.err = err
+		return
+	}
+
+	f.team = resp.Data.Team.toModel()
+}
+
+func (f *fnp) resp() (*model.Team, error) {
+	if f.hasErr() {
+		return nil, f.err
+	}
+
+	return &f.team, nil
+}
+
+func (f *fnp) hasErr() bool {
+	if f.err != nil {
+		return true
+	}
+
+	return false
+}
+
+type steam struct {
 	baseURL string
 }
 
-func (t *team) ByID(id int) (*model.Team, error) {
+func (t *steam) ByID(id int) (*model.Team, error) {
+	url := genURL(t.baseURL, id)
+
+	job := fnp{
+		URL: url,
+	}
+
+	job.get()
+	job.parse()
+	return job.resp()
+}
+
+func (t *steam) ByName(name string) (*model.Team, error) {
+	lname := strings.ToLower(name)
+
+	for i := 0; i < math.MaxInt32; i++ {
+		m, err := t.ByID(i)
+		if err != nil {
+			return nil, err
+		}
+
+		if strings.ToLower(m.Name) == lname {
+			return m, nil
+		}
+	}
 	return nil, nil
 }
 
-func (t *team) ByName(name string) (*model.Team, error) {
-	return nil, nil
-}
-
-// New returns instace of store.Team for api driver
-func New(baseURL string) store.Team {
-	return &team{
+// NewTeam returns instace of store.Team for api driver
+func NewTeam(baseURL string) store.Team {
+	return &steam{
 		baseURL: baseURL,
 	}
 }
