@@ -2,12 +2,12 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"math"
 	"net/http"
 	"strings"
 
 	"github.com/rakin-ishmam/nfplayer/model"
-	"github.com/rakin-ishmam/nfplayer/store"
 )
 
 // fetch and parse
@@ -35,8 +35,14 @@ func (f *fnp) parse() {
 	}
 
 	resp := resp{}
+
 	if err := json.NewDecoder(f.hresp.Body).Decode(&resp); err != nil {
 		f.err = err
+		return
+	}
+
+	if resp.isNotFound() {
+		f.err = fmt.Errorf("%s", resp.Message)
 		return
 	}
 
@@ -59,11 +65,13 @@ func (f *fnp) hasErr() bool {
 	return false
 }
 
-type steam struct {
+// Team handles api team store
+type Team struct {
 	baseURL string
 }
 
-func (t *steam) ByID(id int) (*model.Team, error) {
+// ByID returns team by id
+func (t *Team) ByID(id int) (*model.Team, error) {
 	url := genURL(t.baseURL, id)
 
 	job := fnp{
@@ -75,7 +83,8 @@ func (t *steam) ByID(id int) (*model.Team, error) {
 	return job.resp()
 }
 
-func (t *steam) ByName(name string) (*model.Team, error) {
+// ByName returns team by name
+func (t *Team) ByName(name string) (*model.Team, error) {
 	lname := strings.ToLower(name)
 
 	for i := 0; i < math.MaxInt32; i++ {
@@ -92,8 +101,8 @@ func (t *steam) ByName(name string) (*model.Team, error) {
 }
 
 // NewTeam returns instace of store.Team for api driver
-func NewTeam(baseURL string) store.Team {
-	return &steam{
+func NewTeam(baseURL string) *Team {
+	return &Team{
 		baseURL: baseURL,
 	}
 }

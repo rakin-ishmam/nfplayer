@@ -47,5 +47,15 @@ type data struct {
 }
 
 type resp struct {
-	Data data `json:"data"`
+	Data    data   `json:"data"`
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+}
+
+func (r resp) isNotFound() bool {
+	if r.Code == 404 {
+		return true
+	}
+
+	return false
 }
