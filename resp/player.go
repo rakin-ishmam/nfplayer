@@ -8,10 +8,20 @@ import (
 	"github.com/rakin-ishmam/nfplayer/model"
 )
 
+// TeamAdder wraps team add func
+type TeamAdder interface {
+	TeamAdd(model.Team)
+}
+
+// Printer wraps print func
+type Printer interface {
+	Print(io.Writer)
+}
+
 //RepsGenerator handles player to generate player list
 type RepsGenerator interface {
-	AddTeam(model.Team)
-	Print(io.Writer)
+	TeamAdder
+	Printer
 }
 
 type pstore struct {
@@ -33,7 +43,7 @@ func (p *pstore) get(mp model.Player) player {
 	return np
 }
 
-func (p *pstore) AddTeam(team model.Team) {
+func (p *pstore) TeamAdd(team model.Team) {
 	for _, mplayer := range team.Players {
 		pl := p.get(mplayer)
 		pl.AddTeam(team)
