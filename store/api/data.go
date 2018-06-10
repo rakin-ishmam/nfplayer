@@ -5,19 +5,19 @@ import (
 )
 
 type player struct {
-	ID      string `json:"id"`
-	FName   string `json:"firstName"`
-	LName   string `json:"lastName"`
-	Age     string `json:"age"`
-	Country string `json:"country"`
+	ID        string `json:"id"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Age       string `json:"age"`
+	Country   string `json:"country"`
 }
 
 func (p player) toModel() model.Player {
 	m := model.Player{}
 
 	m.ID = p.ID
-	m.FName = p.FName
-	m.LName = p.LName
+	m.FirstName = p.FirstName
+	m.LastName = p.LastName
 	m.Age = p.Age
 	m.Country = p.Country
 
