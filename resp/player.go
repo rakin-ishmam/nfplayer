@@ -8,22 +8,6 @@ import (
 	"github.com/rakin-ishmam/nfplayer/model"
 )
 
-// TeamAdder wraps team add func
-type TeamAdder interface {
-	TeamAdd(model.Team)
-}
-
-// Printer wraps print func
-type Printer interface {
-	Print(io.Writer)
-}
-
-//RepsGenerator handles player to generate player list
-type RepsGenerator interface {
-	TeamAdder
-	Printer
-}
-
 type pstore struct {
 	players *btree.Tree
 }
@@ -37,8 +21,7 @@ func (p *pstore) get(mp model.Player) player {
 	np := player{
 		teams: btree.NewWithStringComparator(3),
 	}
-	np.country = mp.Country
-	np.fullName = mp.FullName()
+	np.fromModel(mp)
 
 	return np
 }
@@ -67,6 +50,12 @@ type player struct {
 	country  string
 	age      string
 	teams    *btree.Tree
+}
+
+func (p *player) fromModel(m model.Player) {
+	p.country = m.Country
+	p.age = m.Age
+	p.fullName = m.FullName()
 }
 
 func (p *player) AddTeam(t model.Team) {
