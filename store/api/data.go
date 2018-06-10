@@ -25,9 +25,10 @@ func (p player) toModel() model.Player {
 }
 
 type team struct {
-	ID      int      `json:"id"`
-	Name    string   `json:"name"`
-	Players []player `json:"players"`
+	ID         int      `json:"id"`
+	Name       string   `json:"name"`
+	Players    []player `json:"players"`
+	IsNational bool     `json:"isNational"`
 }
 
 func (t team) toModel() model.Team {
@@ -35,6 +36,7 @@ func (t team) toModel() model.Team {
 
 	m.ID = t.ID
 	m.Name = t.Name
+	m.IsNational = t.IsNational
 	for _, p := range t.Players {
 		m.Players = append(m.Players, p.toModel())
 	}
