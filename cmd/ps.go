@@ -35,7 +35,7 @@ var fls flags
 
 // psCmd represents the ps command
 var psCmd = &cobra.Command{
-	Use:   "ps",
+	Use:   "players",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -72,7 +72,7 @@ func init() {
 	psCmd.Flags().BoolVarP(&fls.Logg, "log", "l", false, "show log")
 
 	psCmd.Flags().IntVarP(&fls.MaxID, "maxid", "m", 100, "max id range")
-	psCmd.Flags().IntVarP(&fls.WPool, "wpool", "w", 2, "worker pool")
+	psCmd.Flags().IntVarP(&fls.WPool, "wpool", "w", 40, "worker pool")
 
 	rootCmd.AddCommand(psCmd)
 }
