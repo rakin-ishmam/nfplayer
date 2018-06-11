@@ -17,6 +17,10 @@ func (w *worker) todo(id int) {
 	w.id <- id
 }
 
+func (w *worker) gracefulStop() {
+	close(w.id)
+}
+
 func (w *worker) run() <-chan result {
 	c := make(chan result, 200)
 

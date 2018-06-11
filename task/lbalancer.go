@@ -48,7 +48,9 @@ func (lb *loadBalancer) listen() {
 		case id, ok := <-lb.id:
 			if !ok {
 				lb.id = nil
-				// lb.stop()
+				for _, w := range lb.ws {
+					w.gracefulStop()
+				}
 				continue
 			}
 			lb.ws[curw].todo(id)
