@@ -4,6 +4,7 @@
 - default worker pool: 110
 - default logger is off
 - use cobra to handle command and flags
+- use github.com/emirpasic/gods/trees/btree to sort players name
 
 ## Run command
 - run with default parameter
