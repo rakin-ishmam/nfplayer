@@ -2,12 +2,12 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"math"
 	"net/http"
 	"strings"
 
 	"github.com/rakin-ishmam/nfplayer/model"
+	"github.com/rakin-ishmam/nfplayer/store"
 )
 
 // fetch and parse
@@ -42,7 +42,7 @@ func (f *fnp) parse() {
 	}
 
 	if resp.isNotFound() {
-		f.err = fmt.Errorf("%s", resp.Message)
+		f.err = store.ErrNotFound
 		return
 	}
 
