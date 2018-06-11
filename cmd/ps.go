@@ -71,8 +71,8 @@ func init() {
 	psCmd.Flags().IntVarP(&fls.TeamID, "tid", "i", -math.MaxInt32, "get players by team id")
 	psCmd.Flags().BoolVarP(&fls.Logg, "log", "l", false, "show log")
 
-	psCmd.Flags().IntVarP(&fls.MaxID, "maxid", "m", 100, "max id range")
-	psCmd.Flags().IntVarP(&fls.WPool, "wpool", "w", 40, "worker pool")
+	psCmd.Flags().IntVarP(&fls.MaxID, "maxid", "m", 110, "max id range")
+	psCmd.Flags().IntVarP(&fls.WPool, "wpool", "w", 110, "worker pool")
 
 	rootCmd.AddCommand(psCmd)
 }
