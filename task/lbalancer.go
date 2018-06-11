@@ -29,7 +29,7 @@ func (lb *loadBalancer) run() <-chan result {
 	cs := []<-chan result{}
 
 	for i := 0; i < lb.totWorker; i++ {
-		lb.ws = append(lb.ws, newWorker(lb.ctx, lb.store))
+		lb.ws = append(lb.ws, newWorker(lb.ctx, lb.store, i))
 		cs = append(cs, lb.ws[i].run())
 	}
 

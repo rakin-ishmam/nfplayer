@@ -2,6 +2,7 @@ package task
 
 import (
 	"context"
+	"fmt"
 	"log"
 )
 
@@ -56,8 +57,31 @@ func (nf *nameFind) Find() error {
 	}
 
 	log.Println("tot found", totFound)
+	if err != nil {
+		return nil
+	}
 
-	return err
+	return nf.checkAllTeam(mTeam)
+}
+
+func (nf nameFind) checkAllTeam(teams map[string]bool) error {
+	notFound := ""
+	for k := range teams {
+		if found := teams[k]; !found {
+			if len(notFound) > 0 {
+				notFound = fmt.Sprintf("%s, %s", notFound, k)
+				continue
+			}
+
+			notFound = k
+		}
+	}
+
+	if len(notFound) > 0 {
+		return fmt.Errorf("not found: %s", notFound)
+	}
+
+	return nil
 }
 
 // NameFinder returns intance to filter player by team name

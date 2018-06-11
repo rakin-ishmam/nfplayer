@@ -8,6 +8,7 @@ import (
 )
 
 type worker struct {
+	wid   int
 	id    chan int
 	ctx   context.Context
 	store store.Team
@@ -26,6 +27,9 @@ func (w *worker) run() <-chan result {
 
 	go func() {
 		defer close(c)
+		defer func() {
+			log.Println("stop worker", w.wid)
+		}()
 
 		for w.id != nil {
 			select {
@@ -63,9 +67,10 @@ func (w *worker) run() <-chan result {
 	return c
 }
 
-func newWorker(ctx context.Context, store store.Team) *worker {
+func newWorker(ctx context.Context, store store.Team, id int) *worker {
 	return &worker{
-		id:    make(chan int, 200),
+		wid:   id,
+		id:    make(chan int, 500),
 		ctx:   ctx,
 		store: store,
 	}
